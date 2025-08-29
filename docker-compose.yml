@@ -1,0 +1,43 @@
+version: '3'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "9000:80"
+    depends_on:
+      - backend
+    
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    # entrypoint: ["./wait-for-it.sh", "mysql", "--", "java", "-jar", "/ExpenseWise/backend/backend.jar"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/expenses
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: mysqls01)
+    restart: always  # Automatically restart if the container exits
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: mysqls01)
+      MYSQL_DATABASE: expenses
+      # MYSQL_USER:${DB_USERNAME}
+      # MYSQL_PASSWORD:${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: always  # Automatically restart if the container exits
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "mysql"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+volumes:
+  mysql-data:
