@@ -48,14 +48,14 @@ const FormSplitBill = ({ selectedFriend, onSplitBill }) => {
 
     return (
         <Form className="form-split-bill" onSubmit={handleSubmit}>
-            <Title>Split a bill with {selectedFriend.name}</Title>
-            <Label>💰 Bill value</Label>
+            <Title>🧐 Chia hóa đơn với {selectedFriend.name}</Title>
+            <Label>💵 Giá trị hóa đơn</Label>
             <Input
                 type="text"
                 value={bill}
                 onChange={(e) => setBill(Number(e.target.value))}
             />
-            <Label>🧍‍♀️ Your expense</Label>
+            <Label>💰 Chi phí của bạn</Label>
             <Input
                 type="text"
                 value={paidByUser}
@@ -65,19 +65,19 @@ const FormSplitBill = ({ selectedFriend, onSplitBill }) => {
                     )
                 }
             />
-            <Label>👫 {selectedFriend.name}'s expense</Label>
+            <Label>🤝 {selectedFriend.name}'s chi phí</Label>
             <Input type="text" disabled value={paidByFriend} />
-            <Label>🤑 Who is paying the bill</Label>
+            <Label>🤓 Ai sẽ thanh toán hóa đơn</Label>
             <Select
                 options={[
-                    { value: "user", label: "You" },
+                    { value: "user", label: "Bạn" },
                     { value: "friend", label: `${selectedFriend.name}` }
                 ]}
                 value={whoIsPaying}
                 onChange={(e) => setWhoIsPaying(e.target.value)}
             >
             </Select>
-            <Button>Split bill</Button>
+            <Button>Chia hóa đơn</Button>
         </Form>
     );
 };

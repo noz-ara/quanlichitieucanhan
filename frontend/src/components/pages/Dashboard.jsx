@@ -8,7 +8,7 @@ function Dashboard() {
   return (
     <>
       <Row type="horizontal">
-        <Heading as="h1">Dashboard</Heading>
+        <Heading as="h1">Thống kê chi tiêu</Heading>
         {/* <DashboardFilter /> */}
       </Row>
       <DashboardLayout />

@@ -11,10 +11,10 @@ const ItemContainer = styled.div`
 const ExpenseItem = ({ expense }) => {
   return (
     <ItemContainer className='expense-item'>
-      <p>Amount: {expense.amount}</p>
-      <p>Category: {expense.category}</p>
-      <p>Description: {expense.description}</p>
-      <p>Date: {expense.date}</p>
+      <p>Số tiền: {expense.amount}</p>
+      <p>Danh mục: {expense.category}</p>
+      <p>Mô tả: {expense.description}</p>
+      <p>Ngày: {expense.date}</p>
       {/* <h3>{expense.description}</h3>
       <p>Amount: ${expense.amount}</p>
       <p>Date: {expense.date}</p> */}

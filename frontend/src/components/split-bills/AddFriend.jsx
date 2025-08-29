@@ -46,18 +46,18 @@ function FormAddFriend({ onAddFriend }) {
 
     return (
         <Form className="form-add-friend" onSubmit={handleSubmit}>
-            <Label>👫 Friend name</Label>
+            <Label>👤 Tên bạn bè</Label>
             <Input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
 
-            <Label>🌄 Upload Image</Label>
+            <Label>📸 Tải lên hình ảnh</Label>
             <FileInput
                 onChange={handleFileChange}
             /><span>{image}</span>
-            <Button size="sm">Add</Button>
+            <Button size="sm">Thêm</Button>
         </Form>
     );
 }

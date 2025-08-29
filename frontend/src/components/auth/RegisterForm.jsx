@@ -99,12 +99,12 @@ console.log(imagePreview)
     <FullPageContainer>
       <FormContainer>
         <Form onSubmit={handleSubmit(submitForm)}>
-          <Heading as='h2'>Register</Heading>
+          <Heading as='h2'>Đăng ký</Heading>
           <Input
             name="username"
             type="text"
-            placeholder="Username"
-            {...register('username', { required: 'Username is required' })}
+            placeholder="Tên đăng nhập"
+            {...register('username', { required: 'Tên đăng nhập là bắt buộc' })}
           />
           {errors.username && <ErrorMessage>{errors.username.message}</ErrorMessage>}
 
@@ -112,15 +112,15 @@ console.log(imagePreview)
             name="email"
             type="email"
             placeholder="Email"
-            {...register('email', { required: 'Email is required' })}
+            {...register('email', { required: 'Email là bắt buộc' })}
           />
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
 
           <Input
             name="password"
             type="password"
-            placeholder="Password"
-            {...register('password', { required: 'Password is required' })}
+            placeholder="Mật khẩu"
+            {...register('password', { required: 'Mật khẩu là bắt buộc' })}
           />
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
 
@@ -139,12 +139,12 @@ console.log(imagePreview)
               <img src={imagePreview} alt="Image preview" style={{ width: '200px', height: 'auto' }} />
             </div>
           )}
-          <Button style={{ marginTop: '10px' }} variation="secondary" size="md" type="submit">Register</Button>
+          <Button style={{ marginTop: '10px' }} variation="secondary" size="md" type="submit">Đăng ký</Button>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 
           {suggestedUsernames.length > 0 && (
             <Suggestions>
-              <p>Username suggestions:</p>
+              <p>Gợi ý tên đăng nhập:</p>
               {suggestedUsernames.map((name, index) => (
                 <span key={index}>{name}&nbsp;</span>
               ))}

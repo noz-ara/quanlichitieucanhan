@@ -41,9 +41,9 @@ function ErrorFallback({ error, resetErrorBoundary }) {
       <GlobalStyles />
       <StyledErrorFallback>
         <Box>
-          <Heading as='h1'>Something went wrong! 🧐</Heading>
+          <Heading as='h1'>Có lỗi xảy ra! 🧐</Heading>
           <code style={{ color: "red" }}><>{error.message}</></code><br />
-          <Button onClick={resetErrorBoundary}>Try again</Button>
+          <Button onClick={resetErrorBoundary}>Thử lại</Button>
         </Box>
       </StyledErrorFallback>
     </>

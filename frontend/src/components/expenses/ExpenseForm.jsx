@@ -55,21 +55,21 @@ const ExpenseForm = ({ isOpen, onClose, onSubmit }) => {
           value="daily"
           checked={expenseType === 'daily'}
           onChange={() => setExpenseType('daily')}
-          label='Daily Expense'
+          label='Chi phí hàng ngày'
         />
         <RadioButton
           id="oneTime"
           value="oneTime"
           checked={expenseType === 'oneTime'}
           onChange={() => setExpenseType('oneTime')}
-          label='One-time Expense'
+          label='Chi phí một lần'
         />
         <RadioButton
           id="recurring"
           value="recurring"
           checked={expenseType === 'recurring'}
           onChange={() => setExpenseType('recurring')}
-          label='Recurring Expense'
+          label='Chi phí định kỳ'
         />
         {/* Render additional fields based on selected expense type */}
         <>
@@ -77,26 +77,26 @@ const ExpenseForm = ({ isOpen, onClose, onSubmit }) => {
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="Amount"
+            placeholder="Số tiền"
             required
           />
           <Input
             type="text"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            placeholder="Category"
+            placeholder="Danh mục"
             required
           />
           <TextArea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description"
+            placeholder="Mô tả"
           />
           <Input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            placeholder='Expense Date'
+            placeholder='Ngày chi tiêu'
           />
         </>
         {expenseType === 'recurring' && (
@@ -105,24 +105,24 @@ const ExpenseForm = ({ isOpen, onClose, onSubmit }) => {
               value="monthly"
               checked={recurrence === 'monthly'}
               onChange={() => setRecurrence('monthly')}
-              label='Monthly'
+              label='Hàng tháng'
             />
             <RadioButton
               value="yearly"
               checked={recurrence === 'yearly'}
               onChange={() => setRecurrence('yearly')}
-              label='Yearly'
+              label='Hàng năm'
             />
-            <Label>Recurrence End Date</Label>
+            <Label>Ngày kết thúc định kỳ</Label>
             <Input
               type="date"
               value={recurrenceEndDate}
               onChange={(e) => setRecurrenceEndDate(e.target.value)}
-              placeholder="Recurrence End Date"
+              placeholder="Ngày kết thúc định kỳ"
             />
           </>
         )}
-        <Button type="submit">Add Expense</Button>
+        <Button type="submit">Thêm chi phí</Button>
       </Form>
     </Modal>
   );

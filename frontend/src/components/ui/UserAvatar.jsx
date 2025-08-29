@@ -29,7 +29,7 @@ const UserAvatar = () => {
 
   if (!user) {
     // Handle case where user data is null
-    return <div>No user data available</div>;
+    return <div>Không có dữ liệu người dùng</div>;
   }
 
   console.log('user:', user);

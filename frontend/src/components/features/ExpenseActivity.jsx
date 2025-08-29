@@ -103,7 +103,7 @@ function ExpenseActivity({expenses}) {
   return (
     <StyledToday>
       <Row type="horizontal">
-        <Heading as="h2">Expenses</Heading>
+        <Heading as="h2">Chi tiêu</Heading>
       </Row>
       {expenses && expenses.length > 0 ? (
         <TodayList>
@@ -115,20 +115,20 @@ function ExpenseActivity({expenses}) {
             >
               <ListItemHeading>{expense.category}</ListItemHeading>
               <ListItemContent>
-                <strong>Amount:</strong> ${parseFloat(expense.amount).toFixed(2)}
+                <strong>Số tiền:</strong> ${parseFloat(expense.amount).toFixed(2)}
                 <br />
-                <strong>Date:</strong> {new Date(expense.date).toLocaleDateString()}
+                <strong>Ngày:</strong> {new Date(expense.date).toLocaleDateString()}
               </ListItemContent>
               {hoveredExpense && hoveredExpense.expense_id === expense.expense_id && (
                 <Tooltip className="tooltip">
-                  <strong>Description:</strong> {expense.description || "No description"}
+                  <strong>Mô tả:</strong> {expense.description || "Không có mô tả"}
                 </Tooltip>
               )}
             </StyledListItem>
           ))}
         </TodayList>
       ) : (
-        <NoActivity>No expenses recorded today.</NoActivity>
+        <NoActivity>Không có chi tiêu nào được ghi nhận hôm nay.</NoActivity>
       )}
     </StyledToday>
   );

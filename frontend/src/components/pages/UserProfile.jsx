@@ -8,11 +8,11 @@ const UserProfile = () => {
   const { isLoading, user, profileImage } = useUser();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Đang tải...</div>;
   }
 
   if (!user) {
-    return <div>User not found</div>;
+    return <div>Không tìm thấy người dùng</div>;
   }
 
   // Todo: need to update account ui and to add update profile image option
@@ -21,18 +21,18 @@ const UserProfile = () => {
 
   return (
     <>
-      <Heading as="h1">User Profile</Heading>
+      <Heading as="h1">Hồ sơ người dùng</Heading>
       <ProfileContainer>
       {profileImageUrl && <ProfileImage src={profileImageUrl} alt={`${user.username}'s profile`} />}
         <InfoContainer>
           <InfoItem>
-            <strong>Username:</strong> {user.username}
+            <strong>Tên đăng nhập:</strong> {user.username}
           </InfoItem>
           <InfoItem>
             <strong>Email:</strong> {user.email}
           </InfoItem>
           <InfoItem>
-            <strong>Balance:</strong>{formatCurrency(user.balance)}
+            <strong>Số dư:</strong>{formatCurrency(user.balance)}
           </InfoItem>
           {/* <InfoItem>
           <strong>Authenticated:</strong> {isAuthenticated ? 'Yes' : 'No'}

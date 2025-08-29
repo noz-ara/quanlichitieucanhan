@@ -15,7 +15,7 @@ const PreviewContainer = styled.div`
 const FilePreview = ({ file }) => {
   // Check if a file is provided
   if (!file) {
-    return <PreviewContainer>No file selected</PreviewContainer>;
+    return <PreviewContainer>Không có tệp nào được chọn</PreviewContainer>;
   }
 
   // Check if the file is an image
@@ -28,7 +28,7 @@ const FilePreview = ({ file }) => {
   }
 
   // Return a default preview for other file types
-  return <PreviewContainer>Preview not available</PreviewContainer>;
+  return <PreviewContainer>Không có bản xem trước</PreviewContainer>;
 };
 
 export default FilePreview;

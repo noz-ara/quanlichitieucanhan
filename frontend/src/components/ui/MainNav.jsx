@@ -62,21 +62,21 @@ function MainNav() {
     <nav>
       <NavList>
         <li><StyledNavLink to='/dashboard'>
-          <HiHome /> <span>Home</span>
+          <HiHome /> <span>Trang chủ</span>
         </StyledNavLink></li>
         {/* <li><StyledNavLink to='/expenses'>
           <GiTakeMyMoney /> <span>Expense</span>
         </StyledNavLink></li> */}
         <li><StyledNavLink to='/split/expense'>
-          <GiExpense /> <span>Split Expense</span>
+          <GiExpense /> <span>Chia hóa đơn</span>
         </StyledNavLink></li>
         <li><StyledNavLink to='/account'>
-          <HiMiniUser /> <span>Account</span>
+          <HiMiniUser /> <span>Tài khoản</span>
         </StyledNavLink>
         </li>
         {(user?.role === 'ROLE_ADMIN' || user?.role === 'ADMIN') &&
           (<li><StyledNavLink to='/admin'>
-            <FaUserShield /> <span>Admin Pannel</span>
+            <FaUserShield /> <span>Quản lý tài khoản</span>
           </StyledNavLink></li>)}
         {/* <li><StyledNavLink to='/settings'><HiCog6Tooth />
           <span>Settings</span>

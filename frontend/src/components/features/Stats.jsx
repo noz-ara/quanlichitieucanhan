@@ -12,25 +12,25 @@ function Stats({ summary }) {
   return (
     <>
       <Stat
-        title='Current Balance'
+        title='Số dư tài khoản'
         color='blue'
         icon={<MdAccountBalance />}
         value={formatCurrency(user?.balance)}
       />
       <Stat
-        title='Total Expenses'
+        title='Tổng chi tiêu'
         color='grey'
         icon={<FaRupeeSign />}
         value={formatCurrency(summary.totalTillToday)}
       />
       <Stat
-        title='Expenses this month'
+        title='Chi tiêu trong tháng'
         color='indigo'
         icon={<FaCalendarAlt />}
         value={formatCurrency(summary.totalThisMonth)}
       />
       <Stat
-        title="Expenses This Year"
+        title="Chi tiêu trong năm"
         color='green'
         icon={<FaRegCalendar />}
         value={formatCurrency(summary.totalThisYear)}

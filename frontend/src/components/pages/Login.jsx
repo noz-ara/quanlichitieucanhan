@@ -17,11 +17,11 @@ function Login() {
   return (
     <>
       <Row type="horizontal">
-        <Heading as="h1">Login</Heading>
+        <Heading as="h1">Đăng nhập</Heading>
       </Row>
       <LoginLayout>
         <Logo />
-        <Heading as='h-center'>Login to your account</Heading>
+        <Heading as='h-center'>Đăng nhập vào tài khoản của bạn</Heading>
         <LoginForm />
       </LoginLayout>
     </>

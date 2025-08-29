@@ -76,7 +76,7 @@ const ExpenseList = () => {
     return (
         <div>
             {/* <Heading as='h1'>Expenses</Heading> */}
-            <ButtonIcon onClick={openModal}><FaPlus /> Add Expense</ButtonIcon>
+            <ButtonIcon onClick={openModal}><FaPlus /> Thêm chi phí</ButtonIcon>
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ExpenseForm onSubmit={handleAddExpense} />
             </Modal>

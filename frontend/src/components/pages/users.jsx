@@ -178,9 +178,9 @@ const Users = () => {
 
   return (
     <>
-      <Heading as='h1'>Users</Heading>
+      <Heading as='h1'>Người dùng</Heading>
       <Container>
-        <ButtonIcon onClick={() => { setEditingUser(null); setShowForm(true); openModal(); }}><FaPlus /> Add User</ButtonIcon>
+        <ButtonIcon onClick={() => { setEditingUser(null); setShowForm(true); openModal(); }}><FaPlus /> Thêm người dùng</ButtonIcon>
         {showForm && (
           <>
             <Modal isOpen={isModalOpen} onClose={closeModal} onClick={() => setShowForm(false)}>
@@ -188,19 +188,19 @@ const Users = () => {
                 <Input
                   type="text"
                   id="username"
-                  placeholder="Username"
-                  {...register('username', { required: 'Username is required' })}
+                  placeholder="Tên đăng nhập"
+                  {...register('username', { required: 'Tên đăng nhập là bắt buộc' })}
                 />
                 {errors.username && <Errors className="error">{errors.username.message}</Errors>}
                 <Input
                   type="password"
                   id="password"
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   {...register('password', {
-                    required: 'Password is required',
+                    required: 'Mật khẩu là bắt buộc',
                     minLength: {
                       value: 6,
-                      message: 'Password must be at least 6 characters'
+                      message: 'Mật khẩu phải có ít nhất 6 ký tự'
                     }
                   })}
                 />
@@ -209,7 +209,7 @@ const Users = () => {
                   type="email"
                   id="email"
                   placeholder="Email"
-                  {...register('email', { required: 'Email is required', pattern: /^\S+@\S+$/i })}
+                  {...register('email', { required: 'Email là bắt buộc', pattern: /^\S+@\S+$/i })}
                 />
                 {errors.email && <Errors className="error">{errors.email.message}</Errors>}
 
@@ -249,18 +249,18 @@ const Users = () => {
                 </Flex>
                 {serverError && <Errors className="error">{serverError}</Errors>}
                 <ButtonIcon bg='var(--color-grey-50)' type="submit">
-                  {editingUser ? <><FaSave /> Update</> : <><FaPlus /> Create</>}
+                  {editingUser ? <><FaSave /> Cập nhật</> : <><FaPlus /> Tạo mới</>}
                 </ButtonIcon>
               </Form>
             </Modal>
           </>
         )}
         <Table
-          headers={['id', 'username', 'profileImageFileName', 'email', 'role', 'balance', 'expenses']}
+          headers={['id', 'username', 'profileImageFileName', 'email', 'role', 'Số dư', 'Chi tiêu']}
           data={users}
           actions={[
-            { icon: <RiEditBoxLine />, label: ` Edit`, color: 'var(--color-green-700)', onClick: editUser },
-            { icon: <IoMdTrash />, label: ` Delete`, color: 'red', onClick: deleteUser },
+            { icon: <RiEditBoxLine />, label: ` Chỉnh sửa`, color: 'var(--color-green-700)', onClick: editUser },
+            { icon: <IoMdTrash />, label: ` Xóa`, color: 'red', onClick: deleteUser },
           ]}
         />
       </Container>

@@ -28,7 +28,7 @@ function Logo() {
 
   return (
     <StyledLogo>
-      {LogoIcon} &nbsp; ExpenseWise
+      {LogoIcon} &nbsp; Chi tiêu SMAX
     </StyledLogo>
   );
 }

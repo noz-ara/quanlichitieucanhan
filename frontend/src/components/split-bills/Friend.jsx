@@ -54,15 +54,15 @@ const Friend = ({ friend, onSelection, onRemove, selectedFriend }) => {
 
       {friend.balance < 0 && (
         <Paragraph className="red">
-          You owe {friend.name} {Math.abs(friend.balance)}₹
+          Bạn nợ {friend.name} {Math.abs(friend.balance)}₹
         </Paragraph>
       )}
       {friend.balance > 0 && (
         <Paragraph className="green">
-          {friend.name} owes you {Math.abs(friend.balance)}₹
+          {friend.name} nợ bạn {Math.abs(friend.balance)}₹
         </Paragraph>
       )}
-      {friend.balance === 0 && <Paragraph>You and {friend.name} are even</Paragraph>}
+      {friend.balance === 0 && <Paragraph>Bạn và {friend.name} chia đều hóa đơn</Paragraph>}
 
       <ButtonIcon size="sm" color='red' onClick={() => onRemove(friend.id)}><RxCross2 /></ButtonIcon>
     </ListItem>

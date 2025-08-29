@@ -44,23 +44,22 @@ module.exports = {
     }),
   ],
   devServer: {
-    historyApiFallback: true,
-    static: {
-      directory: path.resolve(__dirname, 'public'),
-    },
-    // contentBase: path.join(__dirname, 'public'),
-    // publicPath: '/',
-    compress: true,
-    port: 9000,
-    open: true,
-    // Proxy requests to the backend server
-    proxy: [{
-      context: ['/api'],
-      target: 'http://localhost:8080',
-      logLevel: 'debug' /*optional*/,
-      pathRewrite: { '^/api': '' },
-      changeOrigin: true,
-      secure: false,
-    }],
-  }
+  historyApiFallback: true,
+  static: {
+    directory: path.resolve(__dirname, 'public'),
+  },
+  compress: true,
+  port: 9000,
+  open: true,
+  hot: true, 
+  watchFiles: ['src/**/*'], 
+  proxy: [{
+    context: ['/api'],
+    target: 'http://localhost:8080',
+    logLevel: 'debug',
+    pathRewrite: { '^/api': '' },
+    changeOrigin: true,
+    secure: false,
+  }],
+}
 };

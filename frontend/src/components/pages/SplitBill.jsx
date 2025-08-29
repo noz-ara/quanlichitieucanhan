@@ -138,11 +138,11 @@ const SplitBill = () => {
   return (
     <>
       <Row type="horizontal">
-        <Heading as="h1">Split Bills</Heading>
+        <Heading as="h1">Chia hóa đơn</Heading>
       </Row>
       <StyledContainer>
         <Sidebar>
-          <Title>Friends</Title>
+          <Title>Danh sách bạn bè</Title>
           <FriendsList
             friends={friends}
             selectedFriend={selectedFriend}
@@ -152,7 +152,7 @@ const SplitBill = () => {
           {showAddFriend && <FormAddFriend onAddFriend={handleAddFriend} />}
 
           <Button variation='text' onClick={handleShowAddFriend}>
-            {showAddFriend ? "Close" : "Add friend"}
+            {showAddFriend ? "Đóng" : "Thêm bạn bè"}
           </Button>
         </Sidebar>
 
