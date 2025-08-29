@@ -1,0 +1,33 @@
+# Normalize line endings
+* text=auto
+
+# Source code files (auto normalize)
+*.js text
+*.ts text
+*.jsx text
+*.tsx text
+*.json text
+*.css text
+*.scss text
+*.html text
+*.md text
+*.yml text
+*.yaml text
+
+# Shell scripts (LF)
+*.sh text eol=lf
+
+# Windows scripts (CRLF)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files (no normalization)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.exe binary
+*.dll binary
