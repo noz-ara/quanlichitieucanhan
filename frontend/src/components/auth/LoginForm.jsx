@@ -154,10 +154,10 @@ const LoginForm = () => {
   return (
     <FullPageContainer>
       <FormContainer>
-        <Title>Login</Title>
+        <Title>Đăng nhập</Title>
         <Form onSubmit={handleSubmit}>
           <InputContainer>
-            <Label htmlFor="username">Username:</Label>
+            <Label htmlFor="username">Tên đăng nhập:</Label>
             <Input
               type="text"
               id="username"
@@ -167,7 +167,7 @@ const LoginForm = () => {
             />
           </InputContainer>
           <InputContainer>
-            <Label htmlFor="password">Password:</Label>
+            <Label htmlFor="password">Mật khẩu:</Label>
             <Input
               type="password"
               id="password"
@@ -178,7 +178,7 @@ const LoginForm = () => {
           </InputContainer>
           <CheckboxContainer>
             <span>
-              <CheckboxLabel htmlFor="rememberMe" style={{ marginBottom: "auto" }}>Remember me</CheckboxLabel>
+              <CheckboxLabel htmlFor="rememberMe" style={{ marginBottom: "auto" }}>Ghi nhớ tôi</CheckboxLabel>
               <Checkbox
                 type="checkbox"
                 id="rememberMe"
@@ -187,13 +187,13 @@ const LoginForm = () => {
               />
             </span>
             <LinkContainer>
-              <Link to="/forgot-password">Forgot Password?</Link>
+              <Link to="/forgot-password">Quên mật khẩu?</Link>
             </LinkContainer>
           </CheckboxContainer>
           {msg && <Message errors={error}>{msg}</Message>}
-          <Button size="lg" type="submit">Login</Button>
+          <Button size="lg" type="submit">Đăng nhập</Button>
           <SignupContainer>
-            <Link to="/signup">Sign Up</Link>
+            <Link to="/signup">Đăng ký</Link>
           </SignupContainer>
         </Form>
       </FormContainer>
