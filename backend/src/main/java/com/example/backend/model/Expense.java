@@ -1,6 +1,7 @@
 package com.example.backend.model;
 
 import com.example.backend.model.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -18,7 +19,7 @@ public class Expense extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long expense_id;
+    private Long expense_id; // Sử dụng expense_id như database
 
     @NotNull
     @Positive(message = "Amount must be positive")
@@ -38,7 +39,8 @@ public class Expense extends BaseEntity {
     @Size(max = 20, message = "Expense type must be up to 20 characters")
     private String expenseType;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
+    private User user;
 }

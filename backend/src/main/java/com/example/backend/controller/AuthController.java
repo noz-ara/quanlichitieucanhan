@@ -1,12 +1,14 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.AuthResponse;
+import com.example.backend.dto.JwtAuthResponse;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.RegisterRequest;
 import com.example.backend.model.FileMetadata;
 import com.example.backend.model.User;
 import com.example.backend.repository.FileRepository;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.security.JwtTokenProvider;
 import com.example.backend.service.CustomUserDetailsService;
 import com.example.backend.util.FileUploadUtil;
 import jakarta.validation.Valid;
@@ -43,8 +45,8 @@ import java.util.stream.Collectors;
 @RestController
 public class AuthController {
 
-//    @Autowired
-//    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private UserRepository userRepository;
@@ -82,15 +84,20 @@ public class AuthController {
                             loginRequest.getPassword()
                     )
             );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            // Log authentication details
-//            if (authentication.isAuthenticated()) {
-//                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//                log.info("User '{}' successfully authenticated. Authorities: {}", userDetails.getUsername(), userDetails.getAuthorities());
-//            }
+            
+            // Generate JWT token
+            String jwtToken = jwtTokenProvider.generateToken(authentication);
+            
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             log.info("User '{}' successfully authenticated. Authorities: {}", userDetails.getUsername(), userDetails.getAuthorities());
-            return ResponseEntity.ok(new AuthResponse(userDetails.getUsername(), userDetails.getAuthorities().iterator().next().getAuthority(), "Login successful!"));
+            
+            // Return JWT token in response
+            return ResponseEntity.ok(new JwtAuthResponse(
+                jwtToken,
+                userDetails.getUsername(),
+                userDetails.getAuthorities().iterator().next().getAuthority(),
+                "Login successful!"
+            ));
         } catch (AuthenticationException e) {
             log.warn("Authentication failed for username: {}", loginRequest.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password!");
@@ -240,46 +247,52 @@ public class AuthController {
 //    }
 @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity<?> registerUser(
-        @Valid @RequestPart("user") User user,
-        @RequestPart("profileImage") MultipartFile profileImage,
-        BindingResult bindingResult) throws IOException {
-
-    log.info("Received user data: {}", user);
-    log.info("Received profile image: {}", profileImage.getOriginalFilename());
-
-    // Check for validation errors
-    if (bindingResult.hasErrors()) {
-        List<String> validationErrors = bindingResult.getAllErrors().stream()
-                .map(ObjectError::getDefaultMessage)
-                .toList();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("message", "Validation failed", "errors", validationErrors));
-    }
+        @RequestParam("username") String username,
+        @RequestParam("password") String password,
+        @RequestParam("email") String email,
+        @RequestParam(value = "profileImage", required = false) MultipartFile profileImage
+) {
+    log.info("Received register request - username: {}, email: {}", username, email);
 
     try {
-        // Upload and save profile image
-        String fileName = fileUploadUtil.uploadFileAndSaveToDatabase(profileImage);
-        user.setProfileImageFileName(fileName); // profileImage is a byte array field in User entity
-    } catch (IOException e) {
+        // Check if username already exists
+        if (userRepository.existsByUsername(username)) {
+            List<String> suggestedUsernames = customUserDetailsService.generateUsernameSuggestions(username);
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "Username already exists", "suggestedUsernames", suggestedUsernames));
+        }
+
+        // Create new user entity
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setEmail(email);
+        user.setRole("ROLE_USER");
+
+        // Handle profile image if provided
+        if (profileImage != null && !profileImage.isEmpty()) {
+            try {
+                String fileName = fileUploadUtil.uploadFileAndSaveToDatabase(profileImage);
+                user.setProfileImageFileName(fileName);
+                log.info("Profile image uploaded: {}", fileName);
+            } catch (IOException e) {
+                log.error("Failed to upload profile image", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("message", "Failed to upload profile image"));
+            }
+        }
+
+        // Save user
+        userRepository.save(user);
+        log.info("User {} registered successfully", username);
+
+        return ResponseEntity.ok(Map.of("message", "User registered successfully!"));
+
+    } catch (Exception e) {
+        log.error("Error while registering user", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "Failed to upload profile image"));
+                .body(Map.of("message", "Internal server error", "error", e.getMessage()));
     }
-
-    // Check if the username already exists & provide suggestions
-    if (userRepository.existsByUsername(user.getUsername())) {
-        List<String> suggestedUsernames = customUserDetailsService.generateUsernameSuggestions(user.getUsername());
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Map.of("message", "Username already exists", "suggestedUsernames", suggestedUsernames));
-    }
-
-    // Creating user's account
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    user.setRole("ROLE_USER");
-
-    // Save user to repository
-    userRepository.save(user);
-
-    return ResponseEntity.ok(Map.of("message", "User registered successfully!"));
 }
 //    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<?> registerUser(
