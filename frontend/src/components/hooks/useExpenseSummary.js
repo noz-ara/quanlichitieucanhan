@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
 import ExpenseService from "../service/ExpenseService";
-import {
-  calculateExpensesByCategory,
-  generateLineChartData,
-} from "../features/ChartData";
 
 const useExpenseSummary = () => {
   const [expenses, setExpenses] = useState([]);
@@ -15,9 +11,8 @@ const useExpenseSummary = () => {
 
   const fetchExpenses = async () => {
     try {
-      const fetchedExpenses = await ExpenseService.getMyExpenses(); // ✅ đổi sang "my"
+      const fetchedExpenses = await ExpenseService.getMyExpenses();
       setExpenses(fetchedExpenses);
-      console.log("fetchExpenses called!");
     } catch (error) {
       console.error("Error fetching expenses:", error.message);
     }
@@ -70,15 +65,10 @@ const useExpenseSummary = () => {
   const sortExpensesByAmountMin = () =>
     expenses.slice().sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
 
-  const expensesByCategory = calculateExpensesByCategory(expenses); // ✅ apply trực tiếp
-  const lineChartData = generateLineChartData(expenses); // ✅ apply trực tiếp
-
   return {
     expenses,
     fetchExpenses,
     summary,
-    expensesByCategory,
-    lineChartData,
     sortExpensesByDateLatest,
     sortExpensesByDateOldest,
     sortExpensesByAmountMax,
