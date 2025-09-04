@@ -1,44 +1,58 @@
 import { useMemo } from "react";
 
-// danh sách tháng (viết tắt)
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-                "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun",
+                "Jul","Aug","Sep","Oct","Nov","Dec"];
 
-/**
- * Gom data chart từ expenses
- * @param {Array} expenses - mảng chi tiêu [{amount, date, category}, ...]
- */
-export default function useChartData(expenses = []) {
+export default function useChartData(expenses = [], incomes = []) {
   // Pie chart: chi tiêu theo danh mục
-  const pieData = useMemo(() => {
+  const expensePie = useMemo(() => {
     const categoryMap = {};
     expenses.forEach(({ category, amount }) => {
       categoryMap[category] = (categoryMap[category] || 0) + parseFloat(amount);
     });
-
     return Object.entries(categoryMap).map(([category, amount]) => ({
       category,
       amount,
     }));
   }, [expenses]);
 
-  // Line chart: chi tiêu theo tháng trong năm hiện tại
+  // Pie chart: thu nhập theo danh mục
+  const incomePie = useMemo(() => {
+    const categoryMap = {};
+    incomes.forEach(({ category, amount }) => {
+      categoryMap[category] = (categoryMap[category] || 0) + parseFloat(amount);
+    });
+    return Object.entries(categoryMap).map(([category, amount]) => ({
+      category,
+      amount,
+    }));
+  }, [incomes]);
+
+  // Line chart: chi tiêu + thu nhập theo tháng trong năm
   const lineData = useMemo(() => {
-    const monthlyTotals = Array(12).fill(0);
+    const monthlyTotals = Array(12).fill(0).map(() => ({ expenses: 0, incomes: 0 }));
     const currentYear = new Date().getFullYear();
 
     expenses.forEach(({ date, amount }) => {
       const d = new Date(date);
       if (d.getFullYear() === currentYear) {
-        monthlyTotals[d.getMonth()] += parseFloat(amount);
+        monthlyTotals[d.getMonth()].expenses += parseFloat(amount);
+      }
+    });
+
+    incomes.forEach(({ date, amount }) => {
+      const d = new Date(date);
+      if (d.getFullYear() === currentYear) {
+        monthlyTotals[d.getMonth()].incomes += parseFloat(amount);
       }
     });
 
     return MONTHS.map((name, i) => ({
       name,
-      expenses: monthlyTotals[i],
+      expenses: monthlyTotals[i].expenses,
+      incomes: monthlyTotals[i].incomes,
     }));
-  }, [expenses]);
+  }, [expenses, incomes]);
 
-  return { pieData, lineData };
+  return { expensePie, incomePie, lineData };
 }

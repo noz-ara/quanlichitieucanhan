@@ -1,6 +1,6 @@
 import api from "./api";
 
-const BASE_URL = "/api/incomes";
+const BASE_URL = "/api/income";
 
 class IncomeService {
   static async addIncome(incomeData) {

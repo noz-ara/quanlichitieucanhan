@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Stats from '../features/Stats';
-import ExpenseActivity from '../features/ExpenseActivity';
-import IncomeActivity from '../features/IncomeActivity';
-import LineChart from '../features/LineChartComponent';
-import PieChart from '../features/PieChartComponent';
-import ExpenseForm from '../expenses/ExpenseForm';
-import { AiOutlinePlus } from 'react-icons/ai';
-import ExpenseService from '../service/ExpenseService';
-import IncomeService from '../service/IncomeService';
-import { useExpenseSummary } from '../hooks/useExpenseSummary';
+import { AiOutlinePlus } from "react-icons/ai";
+
+import Stats from "../features/Stats";
+import ExpenseActivity from "../features/ExpenseActivity";
+import IncomeActivity from "../features/IncomeActivity";
+import ExpenseForm from "../expenses/ExpenseForm";
+import ExpenseService from "../service/ExpenseService";
+import IncomeService from "../service/IncomeService";
+import { useExpenseSummary } from "../hooks/useExpenseSummary";
+import useChartData from "../hooks/useChartData";
+import PieChartComponent from "../features/PieChartComponent";
+import LineChartComponent from "../features/LineChartComponent";
 
 const StyledDashboardLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto 34rem auto;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
   gap: 1.6rem;
-  position: relative; 
+  position: relative;
 `;
 
 const AddButton = styled.button`
@@ -49,56 +51,72 @@ const AddButton = styled.button`
 
 function DashboardLayout() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { expenses, fetchExpenses, summary, sortExpensesByDateLatest } = useExpenseSummary();
+  const { expenses, fetchExpenses, summary, sortExpensesByDateLatest } =
+    useExpenseSummary();
   const [incomes, setIncomes] = useState([]);
 
+  // Chart data
+  const { expensePie, incomePie, lineData } = useChartData(expenses, incomes);
+
+  // Fetch incomes
   const fetchIncomes = async () => {
     try {
-      const data = await IncomeService.getMyIncome();
+      const data = await IncomeService.getMyIncomes();
       setIncomes(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error fetching incomes:', error);
+      console.error("Error fetching incomes:", error);
       setIncomes([]);
     }
   };
 
-  const handleOpenForm = () => {
-    setIsFormOpen(true);
-  };
+  useEffect(() => {
+    fetchExpenses();
+    fetchIncomes();
+  }, []);
 
-  const handleCloseForm = () => {
-    setIsFormOpen(false);
-  };
+  // Handle form
+  const handleOpenForm = () => setIsFormOpen(true);
+  const handleCloseForm = () => setIsFormOpen(false);
 
-  const handleAddExpense = async () => {
+  const handleAddExpense = async (expenseData) => {
     try {
-      // await ExpenseService.addExpense(expenseData);
+      await ExpenseService.addExpense(expenseData);
       setIsFormOpen(false);
       fetchExpenses();
       fetchIncomes();
     } catch (error) {
-      console.error('Error adding expense:', error);
+      console.error("Error adding expense:", error);
     }
   };
-
-  React.useEffect(() => {
-    fetchIncomes();
-  }, []);
 
   return (
     <>
       <StyledDashboardLayout>
+        {/* Tổng quan */}
         <Stats summary={summary} incomes={incomes} />
+
+        {/* Hoạt động gần đây */}
         <ExpenseActivity expenses={sortExpensesByDateLatest()} />
-        <PieChart expenses={expenses} />
-        <IncomeActivity incomes={[...incomes].sort((a, b) => new Date(b.date) - new Date(a.date))} />
-        <PieChart expenses={incomes} />
-        <LineChart expenses={sortExpensesByDateLatest()} incomes={[...incomes].sort((a, b) => new Date(a.date) - new Date(b.date))} />
+        <PieChartComponent data={expensePie} title="Chi tiêu theo danh mục" />
+        <IncomeActivity
+          incomes={[...incomes].sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          )}
+        />
+
+        {/* Biểu đồ */}
+        
+        <PieChartComponent data={incomePie} title="Thu nhập theo danh mục" />
+        <LineChartComponent expenses={expenses} incomes={incomes} />
+
       </StyledDashboardLayout>
 
+      {/* Nút thêm chi tiêu */}
       <AddButton onClick={handleOpenForm}>
         <AiOutlinePlus />
       </AddButton>
+
+      {/* Form thêm chi tiêu */}
       <ExpenseForm
         isOpen={isFormOpen}
         onClose={handleCloseForm}
