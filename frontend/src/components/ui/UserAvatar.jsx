@@ -32,7 +32,7 @@ const UserAvatar = () => {
     return <div>Không có dữ liệu người dùng</div>;
   }
 
-  console.log('user:', user);
+  // User avatar component loaded
 
   const { username } = user;
 

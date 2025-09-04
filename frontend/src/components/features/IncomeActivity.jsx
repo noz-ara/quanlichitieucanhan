@@ -88,47 +88,46 @@ const Tooltip = styled.div`
   }
 `;
 
-function ExpenseActivity({ expenses }) {
-  const [hoveredExpense, setHoveredExpense] = useState(null);
+function IncomeActivity({ incomes }) {
+  const [hoveredIncome, setHoveredIncome] = useState(null);
 
-  const handleMouseEnter = (expense) => setHoveredExpense(expense);
-  const handleMouseLeave = () => setHoveredExpense(null);
+  const handleMouseEnter = (income) => setHoveredIncome(income);
+  const handleMouseLeave = () => setHoveredIncome(null);
 
   return (
     <StyledToday>
       <Row type="horizontal">
-        <Heading as="h2">Chi tiêu</Heading>
+        <Heading as="h2">Thu nhập</Heading>
       </Row>
-      {expenses && expenses.length > 0 ? (
+      {incomes && incomes.length > 0 ? (
         <TodayList>
-          {expenses.map((expense) => (
+          {incomes.map((income) => (
             <StyledListItem
-              key={expense.expense_id}
-              onMouseEnter={() => handleMouseEnter(expense)}
+              key={income.income_id}
+              onMouseEnter={() => handleMouseEnter(income)}
               onMouseLeave={handleMouseLeave}
             >
-              <ListItemHeading>{expense.category}</ListItemHeading>
+              <ListItemHeading>{income.category}</ListItemHeading>
               <ListItemContent>
-                <strong>Số tiền:</strong> {formatCurrency(expense.amount)}
+                <strong>Số tiền:</strong> {formatCurrency(income.amount)}
                 <br />
                 <strong>Ngày:</strong>{" "}
-                {new Date(expense.date).toLocaleDateString("vi-VN")}
+                {new Date(income.date).toLocaleDateString("vi-VN")}
               </ListItemContent>
-              {hoveredExpense &&
-                hoveredExpense.expense_id === expense.expense_id && (
-                  <Tooltip className="tooltip">
-                    <strong>Mô tả:</strong>{" "}
-                    {expense.description || "Không có mô tả"}
-                  </Tooltip>
-                )}
+              {hoveredIncome && hoveredIncome.income_id === income.income_id && (
+                <Tooltip className="tooltip">
+                  <strong>Mô tả:</strong>{" "}
+                  {income.description || "Không có mô tả"}
+                </Tooltip>
+              )}
             </StyledListItem>
           ))}
         </TodayList>
       ) : (
-        <NoActivity>Không có chi tiêu nào được ghi nhận hôm nay.</NoActivity>
+        <NoActivity>Không có khoản thu nào được ghi nhận hôm nay.</NoActivity>
       )}
     </StyledToday>
   );
 }
 
-export default ExpenseActivity;
+export default IncomeActivity;

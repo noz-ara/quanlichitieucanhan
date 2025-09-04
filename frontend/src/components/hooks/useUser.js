@@ -1,57 +1,38 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const useUser = () => {
-  const [isLoading, setIsLoading] = useState(true);
+export const useUser = () => {
+  const { loggedInUser } = useAuth(); // chỉ đọc từ context
   const [user, setUser] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-
-  const { loggedInUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (loggedInUser) {
-        setIsLoading(true);
-
-        try {
-          const response = await fetch(`http://localhost:8080/users/user/${loggedInUser}`);
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-            console.log(userData);
-
-            if (userData.profileImageFileName) {
-              console.log(userData.profileImageFileName);
-              fetchProfileImage(userData.profileImageFileName);
-            }
-          } else {
-            console.error('Failed to fetch user data');
-          }
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
+      if (!loggedInUser) {
         setUser(null);
+        setIsLoading(false);
+        return;
       }
-    };
 
-    const fetchProfileImage = async (fileName) => {
       try {
-        const response = await fetch(`http://localhost:8080/users/user/profileImage/${fileName}`);
+        const response = await fetch(`http://localhost:8080/users/user/${loggedInUser}`);
         if (response.ok) {
-          const imageBlob = await response.blob();
-          console.log(imageBlob);
-          const imageUrl = URL.createObjectURL(imageBlob);
-          console.log(`imageurl`,imageUrl) // imageurl blob:http://localhost:9000/07aade99-d6c2-4d42-9a7d-7a141c2b3a62
-          setProfileImage(imageUrl);
-        } else {
-          console.error('Failed to fetch profile image');
+          const data = await response.json();
+          setUser(data);
+
+          if (data.profileImageFileName) {
+            const imgRes = await fetch(`http://localhost:8080/users/user/profileImage/${data.profileImageFileName}`);
+            if (imgRes.ok) {
+              const blob = await imgRes.blob();
+              setProfileImage(URL.createObjectURL(blob));
+            }
+          }
         }
-      } catch (error) {
-        console.error('Error fetching profile image:', error);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -60,5 +41,3 @@ const useUser = () => {
 
   return { isLoading, user, profileImage };
 };
-
-export { useUser };

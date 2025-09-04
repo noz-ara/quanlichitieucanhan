@@ -1,65 +1,61 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import {useUser} from '../hooks/useUser';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [loggedInUser, setLoggedInUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
-// setIsLoading(false)
-    const login = () => {
-        // Perform login logic...
-        // setIsLoading(true)
-        setIsLoggedIn(true);
-        setIsLoading(false)
-    };
-    // const { setLoggedInUser } = useUser();
+  const login = async (username, password, rememberMe) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
 
-    // useEffect(() => {
-    //     // Fetch user data from /profile endpoint
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const response = await fetch('http://localhost:8080/users/{username}');
-    //             if (response.ok) {
-    //                 const userData = await response.json();
-    //                 console.log('ud',userData)
-    //                 setLoggedInUserId(userData.id);
-    //             } else {
-    //                 console.error('Failed to fetch user data');
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching user data:', error);
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     };
+      if (!response.ok) {
+        const msg = await response.text();
+        return { success: false, message: msg };
+      }
 
-    //     fetchUserData();
-    // }, []);
-   
-    const logout = () => {
-        // Perform logout logic...
-        setIsLoggedIn(false);
-        setLoggedInUser(null);
-        // Clear any user-related data from local storage or session storage
-    };
+      const data = await response.json();
+      setIsLoggedIn(true);
+      setLoggedInUser(data.username);
+      setIsLoading(false);
 
-    const isAuthenticated = isLoggedIn;
+      localStorage.setItem("jwtToken", data.token);
+      if (rememberMe) {
+        localStorage.setItem("username", username);
+        localStorage.setItem("rememberMe", "true");
+      } else {
+        localStorage.removeItem("username");
+        localStorage.removeItem("rememberMe");
+      }
 
-    return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout, isLoading, loggedInUser, setLoggedInUser }}>
-            {children}
-        </AuthContext.Provider>
-    );
+      return { success: true, message: "Đăng nhập thành công!" };
+    } catch (error) {
+      setIsLoading(false);
+      return { success: false, message: "Lỗi kết nối server" };
+    }
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setLoggedInUser(null);
+    localStorage.removeItem("jwtToken");
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{ isAuthenticated: isLoggedIn, isLoading, login, logout, loggedInUser, setLoggedInUser }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);
-
-// Integration Steps:
-
-// - Wrap your application with the AuthProvider to provide authentication context to all components.
-// - Use the useAuth hook in components that need access to authentication state or functions (e.g., LoginForm, LogoutForm).
-// - Use the useUser hook in components that need user data (e.g., UserProfile) and set user data after successful login in the LoginForm.
-// - Trigger the logout process using the logout function provided by the useAuth hook in the LogoutForm.

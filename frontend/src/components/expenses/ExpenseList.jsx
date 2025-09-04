@@ -19,10 +19,12 @@ const ExpenseList = () => {
     useEffect(() => {
         const fetchExpenses = async () => {
             try {
-                const fetchedExpenses = await ExpenseService.getAllExpenses();
-                setExpenseList(fetchedExpenses);
+                const fetchedExpenses = await ExpenseService.getMyExpenses();
+                if (Array.isArray(fetchedExpenses)) setExpenseList(fetchedExpenses);
+                else setExpenseList([]);
             } catch (error) {
                 console.error('Error fetching expenses:', error.message);
+                setExpenseList([]);
             }
         };
         fetchExpenses();
@@ -83,7 +85,7 @@ const ExpenseList = () => {
             <ListContainer>
             {console.log(expenseList)}
                 {expenseList?.map((expense) => (
-                    <ExpenseListItem key={expense.id} expense={expense} />
+                    <ExpenseListItem key={expense.expense_id ?? expense.id} expense={expense} />
                 ))}
             </ListContainer>
             <ExpenseSummary expenses={expenseList} />

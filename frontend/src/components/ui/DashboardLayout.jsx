@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import styled from "styled-components";
 import Stats from '../features/Stats';
 import ExpenseActivity from '../features/ExpenseActivity';
+import IncomeActivity from '../features/IncomeActivity';
 import LineChart from '../features/LineChartComponent';
 import PieChart from '../features/PieChartComponent';
 import ExpenseForm from '../expenses/ExpenseForm';
 import { AiOutlinePlus } from 'react-icons/ai';
 import ExpenseService from '../service/ExpenseService';
+import IncomeService from '../service/IncomeService';
 import { useExpenseSummary } from '../hooks/useExpenseSummary';
 
 const StyledDashboardLayout = styled.div`
@@ -48,6 +50,17 @@ const AddButton = styled.button`
 function DashboardLayout() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { expenses, fetchExpenses, summary, sortExpensesByDateLatest } = useExpenseSummary();
+  const [incomes, setIncomes] = useState([]);
+
+  const fetchIncomes = async () => {
+    try {
+      const data = await IncomeService.getMyIncome();
+      setIncomes(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching incomes:', error);
+      setIncomes([]);
+    }
+  };
 
   const handleOpenForm = () => {
     setIsFormOpen(true);
@@ -62,18 +75,25 @@ function DashboardLayout() {
       // await ExpenseService.addExpense(expenseData);
       setIsFormOpen(false);
       fetchExpenses();
+      fetchIncomes();
     } catch (error) {
       console.error('Error adding expense:', error);
     }
   };
 
+  React.useEffect(() => {
+    fetchIncomes();
+  }, []);
+
   return (
     <>
       <StyledDashboardLayout>
-        <Stats summary={summary} />
+        <Stats summary={summary} incomes={incomes} />
         <ExpenseActivity expenses={sortExpensesByDateLatest()} />
         <PieChart expenses={expenses} />
-        <LineChart expenses={sortExpensesByDateLatest()} />
+        <IncomeActivity incomes={[...incomes].sort((a, b) => new Date(b.date) - new Date(a.date))} />
+        <PieChart expenses={incomes} />
+        <LineChart expenses={sortExpensesByDateLatest()} incomes={[...incomes].sort((a, b) => new Date(a.date) - new Date(b.date))} />
       </StyledDashboardLayout>
 
       <AddButton onClick={handleOpenForm}>

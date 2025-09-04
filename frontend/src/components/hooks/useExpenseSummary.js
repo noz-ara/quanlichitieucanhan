@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
-import ExpenseService from '../service/ExpenseService';
-import { calculateExpensesByCategory, generateLineChartData } from '../features/ChartData';
+import { useState, useEffect } from "react";
+import ExpenseService from "../service/ExpenseService";
+import {
+  calculateExpensesByCategory,
+  generateLineChartData,
+} from "../features/ChartData";
 
 const useExpenseSummary = () => {
   const [expenses, setExpenses] = useState([]);
@@ -12,44 +15,40 @@ const useExpenseSummary = () => {
 
   const fetchExpenses = async () => {
     try {
-      const fetchedExpenses = await ExpenseService.getAllExpenses();
+      const fetchedExpenses = await ExpenseService.getMyExpenses(); // ✅ đổi sang "my"
       setExpenses(fetchedExpenses);
-      console.log('fetchExpenses called!')
+      console.log("fetchExpenses called!");
     } catch (error) {
-      console.error('Error fetching expenses:', error.message);
+      console.error("Error fetching expenses:", error.message);
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchExpenses();
-    return () => {
-      // Cleanup logic (optional)
-    }
-  }
-  ,[])
+  }, []);
 
   useEffect(() => {
     const today = new Date();
-
-    // Calculate total expenses till today
-    const totalTillToday = expenses.reduce((total, expense) => {
-      const expenseDate = new Date(expense.date);
-      return expenseDate <= today ? total + parseFloat(expense.amount) : total;
-    }, 0);
-
-    // Calculate total expenses for the current month
     const currentMonth = today.getMonth() + 1;
     const currentYear = today.getFullYear();
-    const totalThisMonth = expenses.reduce((total, expense) => {
-      const expenseDate = new Date(expense.date);
-      return expenseDate.getMonth() + 1 === currentMonth && expenseDate.getFullYear() === currentYear ?
-        total + parseFloat(expense.amount) : total;
+
+    const totalTillToday = expenses.reduce((total, e) => {
+      const d = new Date(e.date);
+      return d <= today ? total + parseFloat(e.amount) : total;
     }, 0);
 
-    // Calculate total expenses for the current year
-    const totalThisYear = expenses.reduce((total, expense) => {
-      const expenseDate = new Date(expense.date);
-      return expenseDate.getFullYear() === currentYear ? total + parseFloat(expense.amount) : total;
+    const totalThisMonth = expenses.reduce((total, e) => {
+      const d = new Date(e.date);
+      return d.getMonth() + 1 === currentMonth && d.getFullYear() === currentYear
+        ? total + parseFloat(e.amount)
+        : total;
+    }, 0);
+
+    const totalThisYear = expenses.reduce((total, e) => {
+      const d = new Date(e.date);
+      return d.getFullYear() === currentYear
+        ? total + parseFloat(e.amount)
+        : total;
     }, 0);
 
     setSummary({
@@ -57,27 +56,22 @@ const useExpenseSummary = () => {
       totalThisMonth: totalThisMonth.toFixed(2),
       totalThisYear: totalThisYear.toFixed(2),
     });
-
   }, [expenses]);
 
-  const sortExpensesByDateLatest = () => {
-    return expenses.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-  };
+  const sortExpensesByDateLatest = () =>
+    expenses.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  const sortExpensesByDateOldest = () => {
-    return expenses.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
-  };
+  const sortExpensesByDateOldest = () =>
+    expenses.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  const sortExpensesByAmountMax = () => {
-    return expenses.slice().sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
-  };
+  const sortExpensesByAmountMax = () =>
+    expenses.slice().sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
 
-  const sortExpensesByAmountMin = () => {
-    return expenses.slice().sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
-  };
+  const sortExpensesByAmountMin = () =>
+    expenses.slice().sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
 
-  const expensesByCategory = calculateExpensesByCategory; // Replace with actual logic
-  const lineChartData = generateLineChartData; // Replace with actual logic
+  const expensesByCategory = calculateExpensesByCategory(expenses); // ✅ apply trực tiếp
+  const lineChartData = generateLineChartData(expenses); // ✅ apply trực tiếp
 
   return {
     expenses,

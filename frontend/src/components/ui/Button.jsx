@@ -90,7 +90,9 @@ const color = {
 
 
 
-const Button = styled.button`
+const Button = styled.button.withConfig({
+  shouldForwardProp: (prop) => !['size', 'variation', 'color'].includes(prop)
+})`
   border: none;
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);

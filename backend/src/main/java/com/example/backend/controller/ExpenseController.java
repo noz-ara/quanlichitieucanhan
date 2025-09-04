@@ -51,8 +51,15 @@ public class ExpenseController {
     /** Lấy tất cả expenses (chi tiêu) của user hiện tại */
     @GetMapping("/my")
     public ResponseEntity<List<ExpenseResponseDto>> getMyExpenses() {
-        List<Expense> expenses = expenseService.getExpensesByUserAndType(getCurrentUser(), ExpenseType.EXPENSE.name());
-        return ResponseEntity.ok(expenseMapper.toDtoList(expenses));
+        try {
+            User currentUser = getCurrentUser();
+            List<Expense> expenses = expenseService.getExpensesByUserAndType(currentUser, ExpenseType.EXPENSE.name());
+            return ResponseEntity.ok(expenseMapper.toDtoList(expenses));
+        } catch (Exception e) {
+            log.error("Error getting my expenses: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
     /** Lọc theo category */

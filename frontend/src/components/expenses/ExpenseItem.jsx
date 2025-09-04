@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { formatCurrency } from '../utils/helpers';
 
 const ItemContainer = styled.div`
   border: 1px solid #ccc;
@@ -10,14 +11,11 @@ const ItemContainer = styled.div`
 
 const ExpenseItem = ({ expense }) => {
   return (
-    <ItemContainer className='expense-item'>
-      <p>Số tiền: {expense.amount}</p>
+    <ItemContainer className="expense-item">
+      <p>Số tiền: {formatCurrency(expense.amount)}</p>
       <p>Danh mục: {expense.category}</p>
-      <p>Mô tả: {expense.description}</p>
-      <p>Ngày: {expense.date}</p>
-      {/* <h3>{expense.description}</h3>
-      <p>Amount: ${expense.amount}</p>
-      <p>Date: {expense.date}</p> */}
+      <p>Mô tả: {expense.description || "Không có mô tả"}</p>
+      <p>Ngày: {new Date(expense.date).toLocaleDateString("vi-VN")}</p>
     </ItemContainer>
   );
 };

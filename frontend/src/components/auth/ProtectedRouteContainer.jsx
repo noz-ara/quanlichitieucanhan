@@ -47,7 +47,7 @@ const Message= styled.div`
 
   // Check for admin role
   const isAdmin = isAuthenticated && (user?.role === 'ADMIN' || user?.role === 'ROLE_ADMIN');
-  console.log(isAdmin);
+  // Admin check completed
 
   // If user is not admin, render everything except /admin
    // If not admin and accessing /users route, redirect to dashboard

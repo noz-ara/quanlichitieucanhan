@@ -86,7 +86,7 @@ const Users = () => {
       // });
 
       const response = await UserService.createUser(data);
-      console.log('User data saved', response, response.status, response.error);
+      // User data saved successfully
 
       // Check for validation errors returned from the backend
        if (response.status === 400 && response.data) {
@@ -98,7 +98,7 @@ const Users = () => {
       } else if (response[0].error) {
         // setServerError(response.error.message);
         setServerError(`Error creating user: ${response[0].error.message}`);
-        console.log('Error creating user:', response.error);
+        // Error creating user
       } else {
         fetchUsers();
         setShowForm(false);
@@ -129,11 +129,11 @@ const Users = () => {
       // }
 
       const response = await UserService.updateUser(editingUser.id, data);
-      console.log('User data updated', response.error, response[0]);
+      // User data updated successfully
       
       // Check for validation errors returned from the backend
       if (response.status === 400 && response.data) {
-        console.log('User err', response);
+        // User update error
         const errorMessages = Object.values(response.data).join(', ');
         setServerError(`Validation failed: ${errorMessages}`);
         console.log('Validation errors:', response.data);
@@ -142,7 +142,7 @@ const Users = () => {
       } else if (response.error) {
         // setServerError(response.error.message);
         setServerError(`Error creating user: ${response.error.message}`);
-        console.log('Error creating user:', response.error);
+        // Error creating user
       } else {
         fetchUsers();
         resetForm();
@@ -256,7 +256,7 @@ const Users = () => {
           </>
         )}
         <Table
-          headers={['id', 'username', 'profileImageFileName', 'email', 'role', 'Số dư', 'Chi tiêu']}
+          headers={['id', 'username', 'profileImageFileName', 'email', 'role', 'Số dư']}
           data={users}
           actions={[
             { icon: <RiEditBoxLine />, label: ` Chỉnh sửa`, color: 'var(--color-green-700)', onClick: editUser },

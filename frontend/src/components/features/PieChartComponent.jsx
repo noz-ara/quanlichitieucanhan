@@ -3,6 +3,7 @@ import { PieChart, Pie, Tooltip, Legend, Cell } from 'recharts';
 import ChartBox from '../ui/ChartBox';
 import { calculateExpensesByCategory } from './ChartData';
 import { styled } from 'styled-components';
+import Heading from '../ui/Heading';
 
 const StyledBox = styled.div`
     width: 100%;
@@ -22,7 +23,7 @@ const COLORS = [
     '#FF1971', '#19FF9E', '#7119FF', '#FF7119'
 ];
 
-const PieChartComponent = ({ expenses }) => {
+const PieChartComponent = ({ expenses, title, gridColumn }) => {
 
     const calculateExpensesByCategory = () => {
         const categoryMap = {};
@@ -51,7 +52,12 @@ const PieChartComponent = ({ expenses }) => {
     const data = calculateExpensesByCategory();
 
     return (
-        <StyledBox>
+        <StyledBox style={gridColumn ? { gridColumn } : undefined}>
+            {title && (
+                <div style={{ position: 'absolute', top: '0.8rem', left: '1rem' }}>
+                    <Heading as="h3">{title}</Heading>
+                </div>
+            )}
             <PieChart width={400} height={400}>
                 <Pie
                     dataKey="value"

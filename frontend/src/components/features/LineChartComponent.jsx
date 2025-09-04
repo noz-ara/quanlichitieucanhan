@@ -13,31 +13,33 @@ const StyledBox = styled.div`
     overflow-x: auto;
 `;
 
-const LineChartComponent = ({ expenses }) => {
-    // Function to generate line chart data from expenses
-    const generateLineChartData = (expenses) => {
-        const groupedByDate = {};
+const LineChartComponent = ({ expenses, incomes = [] }) => {
+    // Generate comparative line chart data from expenses and incomes
+    const generateLineChartData = (expensesList, incomesList) => {
+        const grouped = {};
 
-        // Group expenses by formatted date and calculate total amount for each date
-        expenses.forEach(expense => {
-            const dateKey = format(new Date(expense.date), 'dd-MMM'); // Format date as "30-Jun"
-            if (!groupedByDate[dateKey]) {
-                groupedByDate[dateKey] = 0;
-            }
-            groupedByDate[dateKey] += parseFloat(expense.amount);
+        expensesList.forEach(item => {
+            const dateKey = format(new Date(item.date), 'dd-MMM');
+            if (!grouped[dateKey]) grouped[dateKey] = { name: dateKey, expenses: 0, incomes: 0 };
+            grouped[dateKey].expenses += parseFloat(item.amount);
         });
 
-        // Prepare data array for recharts LineChart
-        const data = Object.keys(groupedByDate).map(date => ({
-            name: date,
-            expenses: groupedByDate[date],
-        }));
+        incomesList.forEach(item => {
+            const dateKey = format(new Date(item.date), 'dd-MMM');
+            if (!grouped[dateKey]) grouped[dateKey] = { name: dateKey, expenses: 0, incomes: 0 };
+            grouped[dateKey].incomes += parseFloat(item.amount);
+        });
+
+        // Sort by date order using a parse back approach
+        const data = Object.values(grouped).sort((a, b) => {
+            const parse = (label) => new Date(label);
+            return parse(a.name) - parse(b.name);
+        });
 
         return data;
     };
 
-    // Generate data based on expenses
-    const data = generateLineChartData(expenses);
+    const data = generateLineChartData(expenses, incomes);
 
     return (
         <StyledBox>
@@ -48,7 +50,8 @@ const LineChartComponent = ({ expenses }) => {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="expenses" stroke="var(--color-brand-700)" />
+                    <Line type="monotone" dataKey="expenses" stroke="var(--color-brand-700)" name="Chi tiêu" />
+                    <Line type="monotone" dataKey="incomes" stroke="#00C49F" name="Thu nhập" />
                 </LineChart>
             </ResponsiveContainer>
         </StyledBox>

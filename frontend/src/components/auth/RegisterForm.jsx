@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCsrfToken } from '../hooks/useCsrfToken';
 import { Button, FileInput, FormContainer, ErrorMessage, Form, Input, Heading } from '../ui';
 import FilePreview from '../ui/FilePreview';
+import api from '../service/api';
 
 const FullPageContainer = styled.div`
   position: relative;
@@ -38,7 +39,7 @@ const RegisterForm = () => {
     }
   };
 
-console.log(imagePreview)
+  // Image preview loaded
   const submitForm = async (data) => {
     try {
       // const formData = new FormData();
@@ -46,21 +47,18 @@ console.log(imagePreview)
       // formData.append('email', data.email);
       // formData.append('password', data.password);
       const formData = new FormData();
-      formData.append('user', new Blob([JSON.stringify({
-        username: data.username,
-        email: data.email,
-        password: data.password
-      })], { type: 'application/json' }));
+      formData.append('username', data.username);
+      formData.append('email', data.email);
+      formData.append('password', data.password);
       formData.append('profileImage', data.profileImage[0]); // Add the profile image to form data
 
-      const response = await axios.post('http://localhost:8080/register', formData, {
+      await api.post("/register", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'X-CSRF-TOKEN': csrfToken   // Include CSRF token in headers
+          "Content-Type": "multipart/form-data",
+          "X-CSRF-TOKEN": csrfToken,
         },
       });
-
-      console.log(response);
+      // Registration successful
       navigate('/signin');
     } catch (error) {
       if (error.response) {
@@ -78,21 +76,18 @@ console.log(imagePreview)
           if (error.response.data && error.response.data.message) {
             alert(error.response.data.message);
             setErrorMessage(error.response.data.message);
+          } else if (typeof error.response.data === 'string') {
+            setErrorMessage(error.response.data);
+          } else {
+            setErrorMessage('An error occurred while registering.');
           }
-          setErrorMessage(error.response.data);
-          // setErrorMessage('An error occurred while registering.');
         }
       } else {
         setErrorMessage('An unexpected error occurred while registering.');
       }
     }
 
-    console.log('Registered Data:', {
-      username: data.username,
-      email: data.email,
-      password: data.password,
-      image: data.profileImage[0] ? data.profileImage[0].name : null
-    });
+    // Registration completed successfully
   };
 
   return (

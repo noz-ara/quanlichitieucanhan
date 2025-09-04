@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Button, Input, Select } from "../ui";
+import { Button, Input, Select, ErrorMessage } from "../ui";
 
 const Form = styled.form`
   width: 300px;
@@ -36,14 +36,44 @@ const Label = styled.div`
 const FormSplitBill = ({ selectedFriend, onSplitBill }) => {
     const [bill, setBill] = useState("");
     const [paidByUser, setPaidByUser] = useState("");
-    const paidByFriend = bill ? bill - paidByUser : "";
     const [whoIsPaying, setWhoIsPaying] = useState("user");
+    const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    const paidByFriend = bill && paidByUser ? Math.max(0, bill - paidByUser) : 0;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
+        setIsSubmitting(true);
 
-        if (!bill || !paidByUser) return;
-        onSplitBill(whoIsPaying === "user" ? paidByFriend : -paidByUser);
+        // Validation
+        if (!bill || bill <= 0) {
+            setError("Vui lòng nhập giá trị hóa đơn hợp lệ");
+            setIsSubmitting(false);
+            return;
+        }
+
+        if (!paidByUser || paidByUser < 0) {
+            setError("Vui lòng nhập chi phí của bạn hợp lệ");
+            setIsSubmitting(false);
+            return;
+        }
+
+        if (paidByUser > bill) {
+            setError("Chi phí của bạn không thể lớn hơn tổng hóa đơn");
+            setIsSubmitting(false);
+            return;
+        }
+
+        try {
+            const splitAmount = whoIsPaying === "user" ? paidByFriend : -paidByUser;
+            await onSplitBill(splitAmount);
+        } catch (error) {
+            setError("Đã xảy ra lỗi khi chia hóa đơn");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -51,22 +81,30 @@ const FormSplitBill = ({ selectedFriend, onSplitBill }) => {
             <Title>🧐 Chia hóa đơn với {selectedFriend.name}</Title>
             <Label>💵 Giá trị hóa đơn</Label>
             <Input
-                type="text"
+                type="number"
+                min="0"
+                step="0.01"
                 value={bill}
                 onChange={(e) => setBill(Number(e.target.value))}
+                placeholder="Nhập giá trị hóa đơn"
             />
             <Label>💰 Chi phí của bạn</Label>
             <Input
-                type="text"
+                type="number"
+                min="0"
+                step="0.01"
+                max={bill}
                 value={paidByUser}
-                onChange={(e) =>
-                    setPaidByUser(
-                        Number(e.target.value) > bill ? paidByUser : Number(e.target.value)
-                    )
-                }
+                onChange={(e) => setPaidByUser(Number(e.target.value))}
+                placeholder="Nhập chi phí của bạn"
             />
             <Label>🤝 {selectedFriend.name}'s chi phí</Label>
-            <Input type="text" disabled value={paidByFriend} />
+            <Input 
+                type="number" 
+                disabled 
+                value={paidByFriend.toFixed(2)} 
+                placeholder="Tự động tính"
+            />
             <Label>🤓 Ai sẽ thanh toán hóa đơn</Label>
             <Select
                 options={[
@@ -77,7 +115,10 @@ const FormSplitBill = ({ selectedFriend, onSplitBill }) => {
                 onChange={(e) => setWhoIsPaying(e.target.value)}
             >
             </Select>
-            <Button>Chia hóa đơn</Button>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+            <Button disabled={isSubmitting}>
+                {isSubmitting ? "Đang xử lý..." : "Chia hóa đơn"}
+            </Button>
         </Form>
     );
 };

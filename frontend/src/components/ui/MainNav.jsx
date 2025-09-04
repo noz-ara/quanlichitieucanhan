@@ -1,14 +1,11 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom';
 import styled from "styled-components";
-import { IconName } from "react-icons/hi2";
 import { HiHome } from "react-icons/hi2";
-import { HiMiniUser } from "react-icons/hi2";
-import { HiCalendarDays, HiHomeModern, HiOutlineUsers, HiCog6Tooth } from "react-icons/hi2";
+import { HiMiniUser, HiOutlineUsers } from "react-icons/hi2";
 import { GiExpense, GiTakeMyMoney } from "react-icons/gi";
-import { useAuth } from '../context/AuthContext';
-import { useUser } from '../hooks/useUser';
 import { FaUserShield } from "react-icons/fa6";
+import { useUser } from '../hooks/useUser';
 
 const NavList = styled.ul`
   display: flex;
@@ -29,7 +26,6 @@ const StyledNavLink = styled(NavLink)`
     transition: all 0.3s;
   }
 
-  /* This works because react-router places the active class on the active NavLink */
   &:hover,
   &:active,
   &.active:link,
@@ -54,33 +50,43 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-
 function MainNav() {
   const { user } = useUser();
+
+  const isAdmin = user?.role === 'ROLE_ADMIN' || user?.role === 'ADMIN';
 
   return (
     <nav>
       <NavList>
-        <li><StyledNavLink to='/dashboard'>
-          <HiHome /> <span>Trang chủ</span>
-        </StyledNavLink></li>
-        {/* <li><StyledNavLink to='/expenses'>
-          <GiTakeMyMoney /> <span>Expense</span>
-        </StyledNavLink></li> */}
-        <li><StyledNavLink to='/split/expense'>
-          <GiExpense /> <span>Chia hóa đơn</span>
-        </StyledNavLink></li>
-        <li><StyledNavLink to='/account'>
-          <HiMiniUser /> <span>Tài khoản</span>
-        </StyledNavLink>
-        </li>
-        {(user?.role === 'ROLE_ADMIN' || user?.role === 'ADMIN') &&
-          (<li><StyledNavLink to='/admin'>
+        {!isAdmin && (
+          <>
+            <li><StyledNavLink to='/dashboard'>
+              <HiHome /> <span>Trang chủ</span>
+            </StyledNavLink></li>
+
+            {/* <li><StyledNavLink to='/split/expense'>
+              <GiExpense /> <span>Chia hóa đơn</span>
+            </StyledNavLink></li> */}
+
+            <li><StyledNavLink to='/bills'>
+              <GiTakeMyMoney /> <span>Bills</span>
+            </StyledNavLink></li>
+
+            <li><StyledNavLink to='/contacts'>
+              <HiOutlineUsers /> <span>Danh bạ</span>
+            </StyledNavLink></li>
+
+            <li><StyledNavLink to='/account'>
+              <HiMiniUser /> <span>Tài khoản</span>
+            </StyledNavLink></li>
+          </>
+        )}
+
+        {isAdmin && (
+          <li><StyledNavLink to='/admin'>
             <FaUserShield /> <span>Quản lý tài khoản</span>
-          </StyledNavLink></li>)}
-        {/* <li><StyledNavLink to='/settings'><HiCog6Tooth />
-          <span>Settings</span>
-        </StyledNavLink></li> */}
+          </StyledNavLink></li>
+        )}
       </NavList>
     </nav>
   )

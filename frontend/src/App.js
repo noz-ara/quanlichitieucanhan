@@ -17,6 +17,9 @@ import SplitBill from './components/pages/SplitBill';
 import ExpenseForm from './components/expenses/ExpenseForm';
 import ExpenseItem from './components/expenses/ExpenseItem';
 import ExpenseList from './components/expenses/ExpenseList';
+import Contacts from './components/pages/Contacts';
+import Bills from './components/pages/Bills';
+import BillDetail from './components/pages/BillDetail';
 
 const App = () => {
 
@@ -42,6 +45,9 @@ const App = () => {
               <Route path='/admin' element={<Users />} />
               <Route path='/account' element={<UserProfile />} />
               <Route path='/split/expense' element={<SplitBill />} />
+              <Route path='/contacts' element={<Contacts />} />
+              <Route path='/bills' element={<Bills />} />
+              <Route path='/bills/:id' element={<BillDetail />} />
             </Route>
             <Route path="/signup" element={<RegisterForm />} />
             <Route path="/signin" element={<LoginForm />} />
