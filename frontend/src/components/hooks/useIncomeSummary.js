@@ -48,9 +48,9 @@ const useIncomeSummary = () => {
     });
 
     setSummary({
-      totalTillToday: totalTillToday.toFixed(2),
-      totalThisMonth: totalThisMonth.toFixed(2),
-      totalThisYear: totalThisYear.toFixed(2),
+      totalTillToday,
+      totalThisMonth,
+      totalThisYear,
     });
   }, [incomes]);
 

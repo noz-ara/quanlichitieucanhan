@@ -9,6 +9,7 @@ import ExpenseForm from "../expenses/ExpenseForm";
 import ExpenseService from "../service/ExpenseService";
 import IncomeService from "../service/IncomeService";
 import { useExpenseSummary } from "../hooks/useExpenseSummary";
+import { useIncomeSummary } from "../hooks/useIncomeSummary";
 import useChartData from "../hooks/useChartData";
 import PieChartComponent from "../features/PieChartComponent";
 import LineChartComponent from "../features/LineChartComponent";
@@ -51,23 +52,12 @@ const AddButton = styled.button`
 
 function DashboardLayout() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { expenses, fetchExpenses, summary, sortExpensesByDateLatest } =
+  const { expenses, fetchExpenses, summary: expenseSummary, sortExpensesByDateLatest } =
     useExpenseSummary();
-  const [incomes, setIncomes] = useState([]);
+  const { incomes, fetchIncomes, summary: incomeSummary } = useIncomeSummary();
 
   // Chart data
   const { expensePie, incomePie, lineData } = useChartData(expenses, incomes);
-
-  // Fetch incomes
-  const fetchIncomes = async () => {
-    try {
-      const data = await IncomeService.getMyIncomes();
-      setIncomes(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error("Error fetching incomes:", error);
-      setIncomes([]);
-    }
-  };
 
   useEffect(() => {
     fetchExpenses();
@@ -93,7 +83,7 @@ function DashboardLayout() {
     <>
       <StyledDashboardLayout>
         {/* Tổng quan */}
-        <Stats summary={summary} incomes={incomes} />
+        <Stats expenseSummary={expenseSummary} incomeSummary={incomeSummary} />
 
         {/* Hoạt động gần đây */}
         <ExpenseActivity expenses={sortExpensesByDateLatest()} />
@@ -105,7 +95,7 @@ function DashboardLayout() {
         />
 
         {/* Biểu đồ */}
-        
+
         <PieChartComponent data={incomePie} title="Thu nhập theo danh mục" />
         <LineChartComponent expenses={expenses} incomes={incomes} />
 
