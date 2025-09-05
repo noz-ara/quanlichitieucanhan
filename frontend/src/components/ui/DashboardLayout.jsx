@@ -54,7 +54,7 @@ function DashboardLayout() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { expenses, fetchExpenses, summary: expenseSummary, sortExpensesByDateLatest } =
     useExpenseSummary();
-  const { incomes, fetchIncomes, summary: incomeSummary } = useIncomeSummary();
+  const { incomes, fetchIncomes, summary: incomeSummary, sortIncomesByDateLatest } = useIncomeSummary();
 
   // Chart data
   const { expensePie, incomePie, lineData } = useChartData(expenses, incomes);
@@ -73,11 +73,21 @@ function DashboardLayout() {
       await ExpenseService.addExpense(expenseData);
       setIsFormOpen(false);
       fetchExpenses();
-      fetchIncomes();
     } catch (error) {
       console.error("Error adding expense:", error);
     }
   };
+
+  const handleAddIncome = async (incomeData) => {
+    try {
+      await IncomeService.addIncome(incomeData);
+      setIsFormOpen(false);
+      fetchIncomes();
+    } catch (error) {
+      console.error("Error adding income:", error);
+    }
+  };
+
 
   return (
     <>
@@ -86,13 +96,9 @@ function DashboardLayout() {
         <Stats expenseSummary={expenseSummary} incomeSummary={incomeSummary} />
 
         {/* Hoạt động gần đây */}
-        <ExpenseActivity expenses={sortExpensesByDateLatest()} />
+        <ExpenseActivity expenses={sortExpensesByDateLatest()} onDelete={fetchExpenses} />
         <PieChartComponent data={expensePie} title="Chi tiêu theo danh mục" />
-        <IncomeActivity
-          incomes={[...incomes].sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          )}
-        />
+        <IncomeActivity incomes={sortIncomesByDateLatest()} onDelete={fetchIncomes} />
 
         {/* Biểu đồ */}
 
@@ -110,8 +116,10 @@ function DashboardLayout() {
       <ExpenseForm
         isOpen={isFormOpen}
         onClose={handleCloseForm}
-        onSubmit={handleAddExpense}
+        onSubmitExpense={handleAddExpense}
+        onSubmitIncome={handleAddIncome}
       />
+
     </>
   );
 }

@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import { formatCurrency } from "../utils/helpers";
+import { FaTrash } from "react-icons/fa";
+import IncomeService from "../service/IncomeService";
 
 const StyledToday = styled.div`
   background-color: var(--color-grey-0);
@@ -17,13 +19,20 @@ const StyledToday = styled.div`
 `;
 
 const TodayList = styled.ul`
-  overflow: scroll;
+  max-height: 300px;
+  overflow-y: auto;
   overflow-x: hidden;
 
   &::-webkit-scrollbar {
-    width: 0 !important;
+    width: 6px;
   }
-  scrollbar-width: none;
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-grey-300);
+    border-radius: 10px;
+  }
+
+  scrollbar-width: thin;
   -ms-overflow-style: none;
 `;
 
@@ -43,6 +52,9 @@ const StyledListItem = styled.li`
   box-shadow: var(--shadow-sm);
   position: relative;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &:hover {
     .tooltip {
@@ -52,12 +64,16 @@ const StyledListItem = styled.li`
   }
 `;
 
+const ListItemContent = styled.div`
+  flex: 1;
+`;
+
 const ListItemHeading = styled.h3`
   font-size: 1.6rem;
   margin-bottom: 0.8rem;
 `;
 
-const ListItemContent = styled.p`
+const ListItemText = styled.p`
   font-size: 1.4rem;
   line-height: 1.6;
 `;
@@ -88,11 +104,29 @@ const Tooltip = styled.div`
   }
 `;
 
-function IncomeActivity({ incomes }) {
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: var(--color-red-500);
+  font-size: 1.6rem;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-red-700);
+  }
+`;
+
+function IncomeActivity({ incomes, onDelete }) {
   const [hoveredIncome, setHoveredIncome] = useState(null);
 
-  const handleMouseEnter = (income) => setHoveredIncome(income);
-  const handleMouseLeave = () => setHoveredIncome(null);
+  const handleDelete = async (id) => {
+    try {
+      await IncomeService.deleteIncome(id);
+      onDelete(); // gọi lại fetchIncomes() từ DashboardLayout
+    } catch (err) {
+      console.error("Lỗi khi xoá thu nhập:", err);
+    }
+  };
 
   return (
     <StyledToday>
@@ -103,23 +137,31 @@ function IncomeActivity({ incomes }) {
         <TodayList>
           {incomes.map((income) => (
             <StyledListItem
-              key={income.income_id}
-              onMouseEnter={() => handleMouseEnter(income)}
-              onMouseLeave={handleMouseLeave}
+              key={income.expense_id}
+              onMouseEnter={() => setHoveredIncome(income)}
+              onMouseLeave={() => setHoveredIncome(null)}
             >
-              <ListItemHeading>{income.category}</ListItemHeading>
               <ListItemContent>
-                <strong>Số tiền:</strong> {formatCurrency(income.amount)}
-                <br />
-                <strong>Ngày:</strong>{" "}
-                {new Date(income.date).toLocaleDateString("vi-VN")}
+                <ListItemHeading>{income.category}</ListItemHeading>
+                <ListItemText>
+                  <strong>Số tiền:</strong> {formatCurrency(income.amount)}
+                  <br />
+                  <strong>Ngày:</strong>{" "}
+                  {new Date(income.date).toLocaleDateString("vi-VN")}
+                </ListItemText>
+                {hoveredIncome &&
+                  hoveredIncome.expense_id === income.expense_id && (
+                    <Tooltip className="tooltip">
+                      <strong>Mô tả:</strong>{" "}
+                      {income.description || "Không có mô tả"}
+                    </Tooltip>
+                  )}
               </ListItemContent>
-              {hoveredIncome && hoveredIncome.income_id === income.income_id && (
-                <Tooltip className="tooltip">
-                  <strong>Mô tả:</strong>{" "}
-                  {income.description || "Không có mô tả"}
-                </Tooltip>
-              )}
+
+              {/* Nút xóa */}
+              <DeleteButton onClick={() => handleDelete(income.expense_id)}>
+                <FaTrash />
+              </DeleteButton>
             </StyledListItem>
           ))}
         </TodayList>

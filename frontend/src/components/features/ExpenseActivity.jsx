@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import { formatCurrency } from "../utils/helpers";
+import { FaTrash } from "react-icons/fa";
+import ExpenseService from "../service/ExpenseService";
 
 const StyledToday = styled.div`
   background-color: var(--color-grey-0);
@@ -17,13 +19,20 @@ const StyledToday = styled.div`
 `;
 
 const TodayList = styled.ul`
-  overflow: scroll;
+  max-height: 300px;  /* hoặc 100%, hoặc vh tùy layout */
+  overflow-y: auto;
   overflow-x: hidden;
 
   &::-webkit-scrollbar {
-    width: 0 !important;
+    width: 6px;
   }
-  scrollbar-width: none;
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-grey-300);
+    border-radius: 10px;
+  }
+
+  scrollbar-width: thin;
   -ms-overflow-style: none;
 `;
 
@@ -43,6 +52,9 @@ const StyledListItem = styled.li`
   box-shadow: var(--shadow-sm);
   position: relative;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &:hover {
     .tooltip {
@@ -52,12 +64,16 @@ const StyledListItem = styled.li`
   }
 `;
 
+const ListItemContent = styled.div`
+  flex: 1;
+`;
+
 const ListItemHeading = styled.h3`
   font-size: 1.6rem;
   margin-bottom: 0.8rem;
 `;
 
-const ListItemContent = styled.p`
+const ListItemText = styled.p`
   font-size: 1.4rem;
   line-height: 1.6;
 `;
@@ -88,9 +104,29 @@ const Tooltip = styled.div`
   }
 `;
 
-function ExpenseActivity({ expenses }) {
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: var(--color-red-500);
+  font-size: 1.6rem;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-red-700);
+  }
+`;
+
+function ExpenseActivity({ expenses, onDelete }) {
   const [hoveredExpense, setHoveredExpense] = useState(null);
 
+  const handleDelete = async (id) => {
+    try {
+      await ExpenseService.deleteExpense(id);
+      onDelete(); // gọi lại fetchExpenses() từ DashboardLayout
+    } catch (err) {
+      console.error("Lỗi khi xoá chi tiêu:", err);
+    }
+  };
   const handleMouseEnter = (expense) => setHoveredExpense(expense);
   const handleMouseLeave = () => setHoveredExpense(null);
 
@@ -107,20 +143,27 @@ function ExpenseActivity({ expenses }) {
               onMouseEnter={() => handleMouseEnter(expense)}
               onMouseLeave={handleMouseLeave}
             >
-              <ListItemHeading>{expense.category}</ListItemHeading>
               <ListItemContent>
-                <strong>Số tiền:</strong> {formatCurrency(expense.amount)}
-                <br />
-                <strong>Ngày:</strong>{" "}
-                {new Date(expense.date).toLocaleDateString("vi-VN")}
+                <ListItemHeading>{expense.category}</ListItemHeading>
+                <ListItemText>
+                  <strong>Số tiền:</strong> {formatCurrency(expense.amount)}
+                  <br />
+                  <strong>Ngày:</strong>{" "}
+                  {new Date(expense.date).toLocaleDateString("vi-VN")}
+                </ListItemText>
+                {hoveredExpense &&
+                  hoveredExpense.expense_id === expense.expense_id && (
+                    <Tooltip className="tooltip">
+                      <strong>Mô tả:</strong>{" "}
+                      {expense.description || "Không có mô tả"}
+                    </Tooltip>
+                  )}
               </ListItemContent>
-              {hoveredExpense &&
-                hoveredExpense.expense_id === expense.expense_id && (
-                  <Tooltip className="tooltip">
-                    <strong>Mô tả:</strong>{" "}
-                    {expense.description || "Không có mô tả"}
-                  </Tooltip>
-                )}
+
+              {/* Nút xóa */}
+              <DeleteButton onClick={() => handleDelete(expense.expense_id)}>
+                <FaTrash />
+              </DeleteButton>
             </StyledListItem>
           ))}
         </TodayList>

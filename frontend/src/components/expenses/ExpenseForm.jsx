@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Label, RadioButton, Button, Input, TextArea, Modal, ErrorMessage } from '../ui'; 
+import { Form, Label, RadioButton, Button, Input, TextArea, Modal, ErrorMessage } from '../ui';
 import { styled } from 'styled-components';
 import ExpenseService from '../service/ExpenseService';
 import IncomeService from '../service/IncomeService';
 
-const ExpenseForm = ({ isOpen, onClose, onSubmit }) => {
+const ExpenseForm = ({ isOpen, onClose, onSubmitExpense, onSubmitIncome }) => {
   const [expenseType, setExpenseType] = useState('daily');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
@@ -48,23 +48,24 @@ const ExpenseForm = ({ isOpen, onClose, onSubmit }) => {
       description: description.trim(),
       date,
       recurrence,
-      recurrenceEndDate 
+      recurrenceEndDate
     };
 
     try {
       if (transactionType === 'INCOME') {
-        await IncomeService.addIncome(expenseData);
+        await onSubmitIncome(expenseData);
       } else {
-        await ExpenseService.addExpense(expenseData);
+        await onSubmitExpense(expenseData);
       }
-      onSubmit(expenseData); 
       resetForm();
-      onClose(); // Close modal after successful submission
+      onClose();
     } catch (error) {
-      setError(error.response?.data?.message || 'Đã xảy ra lỗi khi thêm chi phí');
+      setError(error.response?.data?.message || 'Đã xảy ra lỗi khi thêm giao dịch');
     } finally {
       setIsSubmitting(false);
     }
+
+
   };
 
   const resetForm = () => {
