@@ -45,11 +45,14 @@ const useExpenseSummary = () => {
         ? total + parseFloat(e.amount)
         : total;
     }, 0);
+    console.log("Expenses:", expenses);
+    console.log("This year:", currentYear);
+    console.log("Total year calc:", totalThisYear);
 
     setSummary({
-      totalTillToday: totalTillToday.toFixed(2),
-      totalThisMonth: totalThisMonth.toFixed(2),
-      totalThisYear: totalThisYear.toFixed(2),
+      totalTillToday,
+      totalThisMonth,
+      totalThisYear,
     });
   }, [expenses]);
 
