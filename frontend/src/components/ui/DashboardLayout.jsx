@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { AiOutlinePlus } from "react-icons/ai";
-
 import Stats from "../features/Stats";
 import ExpenseActivity from "../features/ExpenseActivity";
 import IncomeActivity from "../features/IncomeActivity";
@@ -13,7 +12,8 @@ import { useIncomeSummary } from "../hooks/useIncomeSummary";
 import useChartData from "../hooks/useChartData";
 import PieChartComponent from "../features/PieChartComponent";
 import LineChartComponent from "../features/LineChartComponent";
-
+import { useUser } from "../hooks/useUser";
+import AdviceCard from "../features/AdviceCard";
 const StyledDashboardLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -52,16 +52,16 @@ const AddButton = styled.button`
 
 function DashboardLayout() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { expenses, fetchExpenses, summary: expenseSummary, sortExpensesByDateLatest } =
-    useExpenseSummary();
+  const { expenses, fetchExpenses, summary: expenseSummary, sortExpensesByDateLatest } = useExpenseSummary();
   const { incomes, fetchIncomes, summary: incomeSummary, sortIncomesByDateLatest } = useIncomeSummary();
-
+  const { user, fetchUser } = useUser();
   // Chart data
   const { expensePie, incomePie, lineData } = useChartData(expenses, incomes);
 
   useEffect(() => {
     fetchExpenses();
     fetchIncomes();
+    fetchUser();
   }, []);
 
   // Handle form
@@ -73,6 +73,7 @@ function DashboardLayout() {
       await ExpenseService.addExpense(expenseData);
       setIsFormOpen(false);
       fetchExpenses();
+      fetchUser();
     } catch (error) {
       console.error("Error adding expense:", error);
     }
@@ -83,6 +84,7 @@ function DashboardLayout() {
       await IncomeService.addIncome(incomeData);
       setIsFormOpen(false);
       fetchIncomes();
+      fetchUser();
     } catch (error) {
       console.error("Error adding income:", error);
     }
@@ -93,12 +95,19 @@ function DashboardLayout() {
     <>
       <StyledDashboardLayout>
         {/* Tổng quan */}
-        <Stats expenseSummary={expenseSummary} incomeSummary={incomeSummary} />
+        <Stats user={user} expenseSummary={expenseSummary} incomeSummary={incomeSummary} />
 
         {/* Hoạt động gần đây */}
-        <ExpenseActivity expenses={sortExpensesByDateLatest()} onDelete={fetchExpenses} />
+        <AdviceCard expenseSummary={expenseSummary} incomeSummary={incomeSummary} />
+        <ExpenseActivity expenses={sortExpensesByDateLatest()} onDelete={async () => {
+          await fetchExpenses();
+          await fetchUser(); 
+        }} />
         <PieChartComponent data={expensePie} title="Chi tiêu theo danh mục" />
-        <IncomeActivity incomes={sortIncomesByDateLatest()} onDelete={fetchIncomes} />
+        <IncomeActivity incomes={sortIncomesByDateLatest()} onDelete={async () => {
+          await fetchIncomes();
+          await fetchUser();
+        }} />
 
         {/* Biểu đồ */}
 

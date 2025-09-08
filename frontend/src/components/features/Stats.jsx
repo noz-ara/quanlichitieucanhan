@@ -4,14 +4,10 @@ import Stat from '../ui/Stat';
 import { formatCurrency } from '../utils/helpers';
 import { FaMoneyBill, FaCalendarAlt, FaRegCalendar } from 'react-icons/fa';
 import { MdAccountBalance } from 'react-icons/md';
-import { useUser } from '../hooks/useUser';
 import { GiExpense } from 'react-icons/gi';
 
 
-function Stats({ expenseSummary, incomeSummary }) {
-  const { user } = useUser();
-  console.log("Expense Summary:", expenseSummary);
-  console.log("Income Summary:", incomeSummary);
+function Stats({ user, expenseSummary, incomeSummary }) {
 
   const Grid = styled.div`
     width: 100%;
@@ -27,7 +23,7 @@ function Stats({ expenseSummary, incomeSummary }) {
         title='Số dư tài khoản'
         color='blue'
         icon={<MdAccountBalance />}
-        value={formatCurrency(user?.balance)}
+        value={formatCurrency(user?.balance || 0)}
       />
       <Stat
         title='Tổng chi tiêu'
