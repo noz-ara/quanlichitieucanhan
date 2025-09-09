@@ -16,6 +16,8 @@ public class ExpenseResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     
+    private String budgetGroup;
+    
     private String expenseType;
     private String username; // Chỉ lấy username thay vì toàn bộ User object
 }

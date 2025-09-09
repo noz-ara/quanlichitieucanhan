@@ -106,6 +106,7 @@ public class ExpenseController {
         expense.setCategory(expenseDTO.getCategory());
         expense.setDescription(expenseDTO.getDescription());
         expense.setDate(expenseDTO.getDate() != null ? expenseDTO.getDate() : LocalDate.now());
+        expense.setBudgetGroup(expenseDTO.getBudgetGroup());
         expense.setExpenseType(ExpenseType.EXPENSE.name());
 
         Expense created = expenseService.createExpense(expense, getCurrentUser());
@@ -134,6 +135,7 @@ public class ExpenseController {
         if (expenseDTO.getDate() != null) {
             existingExpense.setDate(expenseDTO.getDate());
         }
+        existingExpense.setBudgetGroup(expenseDTO.getBudgetGroup());
 
         Expense updated = expenseService.updateExpense(id, existingExpense, getCurrentUser());
         if (updated != null) {

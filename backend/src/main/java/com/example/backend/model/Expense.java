@@ -1,8 +1,6 @@
 package com.example.backend.model;
 
-import com.example.backend.model.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -32,8 +30,11 @@ public class Expense extends BaseEntity {
     @Size(max = 255, message = "Description must be up to 255 characters")
     private String description;
 
-//    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate date;
+
+    @NotBlank(message = "Budget group is required")
+    @Size(max = 20, message = "Budget group must be up to 20 characters")
+    private String budgetGroup; // ESSENTIAL | WANTS | SAVINGS
 
     @NotBlank(message = "Expense type is required")
     @Size(max = 20, message = "Expense type must be up to 20 characters")

@@ -23,4 +23,7 @@ public class ExpenseCreateDTO {
     private String description;
     
     private LocalDate date;
+
+    @Size(max = 20, message = "Budget group must be up to 20 characters")
+    private String budgetGroup; // ESSENTIAL | WANTS | SAVINGS
 }

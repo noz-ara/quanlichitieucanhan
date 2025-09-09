@@ -10,6 +10,7 @@ const ExpenseForm = ({ isOpen, onClose, onSubmitExpense, onSubmitIncome }) => {
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
+  const [budgetGroup, setBudgetGroup] = useState('ESSENTIAL');
   const [recurrence, setRecurrence] = useState('monthly');
   const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
   const [error, setError] = useState('');
@@ -47,6 +48,7 @@ const ExpenseForm = ({ isOpen, onClose, onSubmitExpense, onSubmitIncome }) => {
       category: category.trim(),
       description: description.trim(),
       date,
+      budgetGroup,
       recurrence,
       recurrenceEndDate
     };
@@ -76,6 +78,7 @@ const ExpenseForm = ({ isOpen, onClose, onSubmitExpense, onSubmitIncome }) => {
     setDate('');
     setRecurrence('monthly');
     setRecurrenceEndDate('');
+    setBudgetGroup('ESSENTIAL');
     setError('');
     setIsSubmitting(false);
     setTransactionType('EXPENSE');
@@ -141,6 +144,12 @@ const ExpenseForm = ({ isOpen, onClose, onSubmitExpense, onSubmitIncome }) => {
             placeholder="Danh mục"
             required
           />
+          <Label>Nhóm ngân sách</Label>
+          <select value={budgetGroup} onChange={(e) => setBudgetGroup(e.target.value)} style={{marginBottom: '1rem'}}>
+            <option value="ESSENTIAL">ESSENTIAL</option>
+            <option value="WANTS">WANTS</option>
+            <option value="SAVINGS">SAVINGS</option>
+          </select>
           <TextArea
             value={description}
             onChange={(e) => setDescription(e.target.value)}

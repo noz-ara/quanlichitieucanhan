@@ -21,6 +21,7 @@ public class ExpenseMapper {
         dto.setCategory(expense.getCategory());
         dto.setDescription(expense.getDescription());
         dto.setDate(expense.getDate());
+        dto.setBudgetGroup(expense.getBudgetGroup());
         dto.setExpenseType(expense.getExpenseType());
         
         // Chỉ lấy username thay vì toàn bộ User object
