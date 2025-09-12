@@ -3,7 +3,7 @@ import api from "./api";
 class UserService {
   // Lấy danh sách user (admin)
   static async fetchUsers() {
-    const { data } = await api.get("/admin/users");
+    const { data } = await api.get("/api/admin/users");
     return data;
   }
 
@@ -32,7 +32,7 @@ class UserService {
       formData.append("profileImage", userData.profileImage[0]);
     }
 
-    const { data } = await api.post("/admin/users", formData, {
+    const { data } = await api.post("/api/admin/users", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
@@ -61,7 +61,7 @@ class UserService {
       formData.append("profileImage", userData.profileImage[0]);
     }
 
-    const { data } = await api.put(`/admin/users/${userId}`, formData, {
+    const { data } = await api.put(`/api/admin/users/${userId}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
@@ -70,7 +70,7 @@ class UserService {
 
   // Xóa user
   static async deleteUser(userId) {
-    await api.delete(`/admin/users/${userId}`);
+    await api.delete(`/api/admin/users/${userId}`);
   }
 }
 

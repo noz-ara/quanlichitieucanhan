@@ -52,7 +52,7 @@ const variations = {
   `,
 
   danger: css`
-    color: var(--color-red-500);
+    color: white;
     background-color: var(--color-red-500);
 
     &:hover {
@@ -84,7 +84,7 @@ const color = {
     color: var(--color-silver-700);
   `,
   danger: css`
-    color: var(--color-red-700);
+    color: white;
   `,
 };
 

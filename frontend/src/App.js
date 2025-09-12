@@ -20,6 +20,7 @@ import ExpenseList from './components/expenses/ExpenseList';
 import Contacts from './components/pages/Contacts';
 import Bills from './components/pages/Bills';
 import BillDetail from './components/pages/BillDetail';
+import BillCreate from './components/pages/BillCreate';
 
 const App = () => {
 
@@ -47,6 +48,7 @@ const App = () => {
               <Route path='/split/expense' element={<SplitBill />} />
               <Route path='/contacts' element={<Contacts />} />
               <Route path='/bills' element={<Bills />} />
+              <Route path='/bills/create' element={<BillCreate />} />
               <Route path='/bills/:id' element={<BillDetail />} />
             </Route>
             <Route path="/signup" element={<RegisterForm />} />

@@ -11,6 +11,11 @@ class BillService {
     return data;
   }
 
+  // alias để tương thích các trang đang gọi listMy
+  static async listMy() {
+    return this.getMyBills();
+  }
+
   static async getBillById(id) {
     const { data } = await api.get(`/bills/${id}`);
     return data;

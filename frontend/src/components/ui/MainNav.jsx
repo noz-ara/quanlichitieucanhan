@@ -68,13 +68,13 @@ function MainNav() {
               <GiExpense /> <span>Chia hóa đơn</span>
             </StyledNavLink></li> */}
 
-            <li><StyledNavLink to='/bills'>
+            {/* <li><StyledNavLink to='/bills'>
               <GiTakeMyMoney /> <span>Bills</span>
-            </StyledNavLink></li>
+            </StyledNavLink></li> */}
 
-            <li><StyledNavLink to='/contacts'>
+            {/* <li><StyledNavLink to='/contacts'>
               <HiOutlineUsers /> <span>Danh bạ</span>
-            </StyledNavLink></li>
+            </StyledNavLink></li> */}
 
             <li><StyledNavLink to='/account'>
               <HiMiniUser /> <span>Tài khoản</span>

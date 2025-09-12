@@ -24,6 +24,7 @@ function Bills() {
     <div>
       <Row type="horizontal">
         <Heading as="h1">Bills của tôi</Heading>
+        <Button size="sm" onClick={() => navigate('/bills/create')}>Tạo bill</Button>
       </Row>
       {loading ? (
         <div>Đang tải...</div>

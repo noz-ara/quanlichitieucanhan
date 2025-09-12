@@ -15,7 +15,7 @@ const ModalOverlay = styled.div`
 
 const ModalContainer = styled.div`
   position: relative;
-  width: 300px;
+  width: 500px;
   background-color: var(--color-grey-100);
   border-radius: 8px;
   padding: 20px;
@@ -29,7 +29,7 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   color: silver;
   box-sizing: border-box;
 `;

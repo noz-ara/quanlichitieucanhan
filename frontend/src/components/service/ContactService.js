@@ -9,7 +9,7 @@ class ContactService {
 
   // Lấy danh sách contact của user
   static async listMy() {
-    const { data } = await api.get("/contacts/my");
+    const { data } = await api.get("/contacts");
     return data;
   }
 

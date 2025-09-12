@@ -98,6 +98,9 @@ public class IncomeController {
         income.setCategory(incomeDTO.getCategory());
         income.setDescription(incomeDTO.getDescription());
         income.setDate(incomeDTO.getDate() != null ? incomeDTO.getDate() : LocalDate.now());
+        // Income vẫn dùng chung entity Expense nên cần budgetGroup để thỏa validation
+        String bg = incomeDTO.getBudgetGroup();
+        income.setBudgetGroup((bg != null && !bg.isBlank()) ? bg : "SAVINGS");
         income.setExpenseType(ExpenseType.INCOME.name());
 
         Expense created = expenseService.createExpense(income, getCurrentUser());
@@ -127,6 +130,10 @@ public class IncomeController {
         existingIncome.setDescription(incomeDTO.getDescription());
         if (incomeDTO.getDate() != null) {
             existingIncome.setDate(incomeDTO.getDate());
+        }
+        // Cho phép cập nhật budgetGroup nếu truyền vào, nếu không giữ nguyên
+        if (incomeDTO.getBudgetGroup() != null && !incomeDTO.getBudgetGroup().isBlank()) {
+            existingIncome.setBudgetGroup(incomeDTO.getBudgetGroup());
         }
 
         Expense updated = expenseService.updateExpense(id, existingIncome, getCurrentUser());

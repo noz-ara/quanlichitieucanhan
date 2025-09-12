@@ -48,7 +48,10 @@ const Form = styled.form`
 const Label= styled.span`
   color: ${color=> color? color : `var(--color-grey-100)`};
   margin-right: 10px;
-  margin-top: 1rem;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  font-size: 2rem;
+  font-weight: 700;
 `;
 
 const ErrorMessage = styled.div`
