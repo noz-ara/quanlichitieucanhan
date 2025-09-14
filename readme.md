@@ -42,9 +42,7 @@ ExpenseWise là một ứng dụng quản lý chi tiêu cá nhân gồm backend 
 
 ---
 
-## Sơ đồ ER
 
-<img src="./ER-Diagram.png" alt="ER-Diagram" width="356" />
 
 ---
 
